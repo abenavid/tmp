@@ -2,8 +2,9 @@
 - name: Deploy OSI application from a gzip file
   hosts: node1
   become: true
+  gather_facts: false
   vars:
-    app_source: "/path/to/osi_application.tar.gz"
+    app_source: "/home/ec2-user/busybox.tar.gz"
     app_dest: "/opt/osi_app"
   
   tasks:
@@ -27,6 +28,6 @@
       file:
         path: "{{ app_dest }}"
         state: directory
-        owner: student1 # CHANGE_ME
+        owner: ec2-user # CHANGE_ME
         #group: appgroup # CHANGE_ME
         mode: '0755'
