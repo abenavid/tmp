@@ -20,6 +20,7 @@
         remote_src: yes
       notify: 
         - Post install tasks  # Notify handler when extraction is done
+        - Post install tasks 2 # Notify handler when extraction is done
 
     - name: Set correct permissions on the application folder
       file:
@@ -30,12 +31,10 @@
 
   handlers:
     - name: Post install tasks
-      block:
-        - name: Restart application service
-          shell: |
-            cd /opt/osi_app/node-v6.9.2-linux-x64/bin && ./node -v
-          register: node_version_output
+      shell: |
+        cd /opt/osi_app/node-v6.9.2-linux-x64/bin && ./node -v
+      register: node_version_output
 
-        - name: Display Node.js version
-          debug:
-            msg: "Node.js version: {{ node_version_output.stdout }}"
+    - name: Post install tasks 2
+      debug:
+        msg: "Node.js version: {{ node_version_output.stdout }}"
