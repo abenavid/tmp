@@ -6,7 +6,7 @@
   vars:
     app_source: "/home/ec2-user/node-v6.9.2-linux-x64.tar.gz"
     app_dest: "/opt/osi_app"
-  
+
   tasks:
     - name: Ensure the deployment directory exists
       file:
@@ -18,12 +18,23 @@
         src: "{{ app_source }}"
         dest: "{{ app_dest }}"
         remote_src: yes
-        
+      notify: Post install tasks  # Notify handler when extraction is done
 
     - name: Set correct permissions on the application folder
       file:
         path: "{{ app_dest }}"
         state: directory
         owner: ec2-user # CHANGE_ME
-        #group: appgroup # CHANGE_ME
         mode: '0755'
+
+  handlers:
+    - name: Post install tasks
+      block:
+        - name: Restart application service
+          shell: |
+            cd /opt/osi_app/node-v6.9.2-linux-x64/bin && ./node -v
+          register: node_version_output
+
+        - name: Display Node.js version
+          debug:
+            msg: "Node.js version: {{ node_version_output.stdout }}"
