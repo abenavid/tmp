@@ -2,6 +2,7 @@
 - name: System Configuration Checks
   hosts: node1
   become: true
+  gather_facts: false
   tasks:
     - name: Check user existence
       ansible.builtin.command:
