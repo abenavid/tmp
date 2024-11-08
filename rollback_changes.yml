@@ -2,6 +2,7 @@
 - name: Rollback changes to /etc/hosts and /etc/resolv.conf
   hosts: node1
   become: true
+  gather_facts: false
   vars:
     backup_files:
       - { src: "/etc/hosts.bak", dest: "/etc/hosts" }
