@@ -1,0 +1,32 @@
+---
+- name: Deploy OSI application from a gzip file
+  hosts: node1
+  become: true
+  vars:
+    app_source: "/path/to/osi_application.tar.gz"
+    app_dest: "/opt/osi_app"
+  
+  tasks:
+    - name: Ensure the deployment directory exists
+      file:
+        path: "{{ app_dest }}"
+        state: directory
+
+    - name: Copy application gzip file to target server
+      copy:
+        src: "{{ app_source }}"
+        dest: /tmp/osi_application.tar.gz
+
+    - name: Extract the gzip file
+      unarchive:
+        src: /tmp/osi_application.tar.gz
+        dest: "{{ app_dest }}"
+        remote_src: yes
+
+    - name: Set correct permissions on the application folder
+      file:
+        path: "{{ app_dest }}"
+        state: directory
+        owner: student1 # CHANGE_ME
+        #group: appgroup # CHANGE_ME
+        mode: '0755'

@@ -1,0 +1,23 @@
+---
+- name: Configure /etc/hosts and /etc/resolv.conf
+  hosts: node1
+  become: true
+  vars:
+    config_files:
+      - { orig: "/etc/hosts", backup: "/etc/hosts.bak", line: "192.168.1.10 myserver.local myserver" }
+      - { orig: "/etc/resolv.conf", backup: "/etc/resolv.conf.bak", line: "nameserver 8.8.8.8" }
+
+  tasks:
+    - name: Backup original configuration files
+      copy:
+        src: "{{ item.orig }}"
+        dest: "{{ item.backup }}"
+        backup: yes
+      with_items: "{{ config_files }}"
+
+    - name: Update configuration files with required entries
+      lineinfile:
+        path: "{{ item.orig }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items: "{{ config_files }}"g

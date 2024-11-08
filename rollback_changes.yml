@@ -1,0 +1,29 @@
+---
+- name: Rollback changes to /etc/hosts and /etc/resolv.conf
+  hosts: node1
+  become: true
+  vars:
+    backup_files:
+      - { src: "/etc/hosts.bak", dest: "/etc/hosts" }
+      - { src: "/etc/resolv.conf.bak", dest: "/etc/resolv.conf" }
+
+  tasks:
+    - name: Check if backup files exist
+      stat:
+        path: "{{ item.src }}"
+      with_items: "{{ backup_files }}"
+      register: backup_check
+
+    - name: Report missing backup files and exit gracefully
+      debug:
+        msg: "{{ item.item.src }} not found, skipping restore"
+      with_items: "{{ backup_check.results }}"
+      when: not item.stat.exists
+      failed_when: false
+
+    - name: Restore files from backup if they exist
+      copy:
+        src: "{{ item.item.src }}"
+        dest: "{{ item.item.dest }}"
+      with_items: "{{ backup_check.results }}"
+      when: item.stat.exists
