@@ -1,7 +1,7 @@
 ---
 - name: Configure /etc/hosts and /etc/resolv.conf
   hosts: node1
-  become: true
+  become: false
   vars:
     config_files:
       - { orig: "/etc/hosts", backup: "/etc/hosts.bak", line: "192.168.1.10 myserver.local myserver" }
@@ -20,4 +20,4 @@
         path: "{{ item.orig }}"
         line: "{{ item.line }}"
         state: present
-      with_items: "{{ config_files }}"g
+      with_items: "{{ config_files }}"
