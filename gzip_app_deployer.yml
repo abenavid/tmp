@@ -13,14 +13,9 @@
         path: "{{ app_dest }}"
         state: directory
 
-    - name: Copy application gzip file to target server
-      copy:
-        src: "{{ app_source }}"
-        dest: /tmp/osi_application.tar.gz
-
     - name: Extract the gzip file
       unarchive:
-        src: /tmp/osi_application.tar.gz
+        src: "{{ app_source }}"
         dest: "{{ app_dest }}"
         remote_src: yes
 
