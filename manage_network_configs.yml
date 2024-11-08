@@ -2,6 +2,7 @@
 - name: Configure /etc/hosts and /etc/resolv.conf
   hosts: node1
   become: false
+  gather_facts: false
   vars:
     config_files:
       - { orig: "/etc/hosts", backup: "/etc/hosts.bak", line: "192.168.1.10 myserver.local myserver" }
