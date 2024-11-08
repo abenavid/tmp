@@ -18,7 +18,8 @@
         src: "{{ app_source }}"
         dest: "{{ app_dest }}"
         remote_src: yes
-      notify: Post install tasks  # Notify handler when extraction is done
+      notify: 
+        - Post install tasks  # Notify handler when extraction is done
 
     - name: Set correct permissions on the application folder
       file:
